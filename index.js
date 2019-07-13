@@ -4,6 +4,19 @@ const server = express();
 
 server.use(express.json());
 
+function checkProjectExists(req, res, next) {
+  const { id } = req.params;
+
+  for (let prop in projects) {
+    const idProject = projects[prop].id;
+    if (idProject === id) {
+      return next();
+    }
+  }
+
+  return res.status(400).json({ error: "Project not found" });
+}
+
 const projects = [];
 
 server.get("/projects", (req, res) => {
@@ -18,7 +31,7 @@ server.post("/projects", (req, res) => {
   return res.json(projects);
 });
 
-server.post("/projects/:id/tasks", (req, res) => {
+server.post("/projects/:id/tasks", checkProjectExists, (req, res) => {
   const { id } = req.params;
   const { title } = req.body;
 
@@ -33,7 +46,7 @@ server.post("/projects/:id/tasks", (req, res) => {
   return res.json(projects);
 });
 
-server.put("/projects/:id", (req, res) => {
+server.put("/projects/:id", checkProjectExists, (req, res) => {
   const { id } = req.params;
   const { title } = req.body;
 
@@ -48,7 +61,7 @@ server.put("/projects/:id", (req, res) => {
   return res.json(projects);
 });
 
-server.delete("/projects/:id", (req, res) => {
+server.delete("/projects/:id", checkProjectExists, (req, res) => {
   const { id } = req.params;
   const { title } = req.body;
 
