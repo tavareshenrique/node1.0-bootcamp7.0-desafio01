@@ -4,6 +4,15 @@ const server = express();
 
 server.use(express.json());
 
+let interationRequest = 0;
+const projects = [];
+
+server.use((req, res, next) => {
+  interationRequest = interationRequest + 1;
+  console.log(`Foram feitas: ${interationRequest} requisição(ões)`);
+  return next();
+});
+
 function checkProjectExists(req, res, next) {
   const { id } = req.params;
 
@@ -16,8 +25,6 @@ function checkProjectExists(req, res, next) {
 
   return res.status(400).json({ error: "Project not found" });
 }
-
-const projects = [];
 
 server.get("/projects", (req, res) => {
   return res.json(projects);
