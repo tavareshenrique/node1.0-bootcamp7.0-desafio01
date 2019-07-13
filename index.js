@@ -33,4 +33,18 @@ server.put("/projects/:id", (req, res) => {
   return res.json(projects);
 });
 
+server.delete("/projects/:id", (req, res) => {
+  const { id } = req.params;
+  const { title } = req.body;
+
+  for (let prop in projects) {
+    const idProject = projects[prop].id;
+    if (idProject === id) {
+      projects.splice(prop, 1);
+    }
+  }
+
+  return res.send();
+});
+
 server.listen(3000);
